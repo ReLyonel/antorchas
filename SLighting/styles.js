@@ -42,6 +42,15 @@ export function injectStyles() {
     .slighting-hidden {
       display: none !important;
     }
+
+    .slighting-toggle {
+      margin-bottom: 0.5rem;
+    }
+
+    .slighting-toggle-button {
+      width: 100%;
+      min-height: 30px;
+    }
   `;
 
   document.head.appendChild(style);

@@ -11,6 +11,17 @@ export function registerSettings() {
     default: false,
   });
 
+
+  game.settings.register(MODULE_ID, "EnrichSystemTorch", {
+    name: game.i18n.localize("SLighting.Settings.EnrichSystemTorch.name"),
+    hint: game.i18n.localize("SLighting.Settings.EnrichSystemTorch.hint"),
+    scope: "world",
+    config: true,
+    restricted: true,
+    type: Boolean,
+    default: false,
+  });
+
   game.settings.register(MODULE_ID, "migrationVersion", {
     name: "Migration Version",
     scope: "world",

@@ -1,0 +1,63 @@
+{
+  "SLighting": {
+    "ModuleDescription": "Gestión de fuentes de luz consumibles para dnd5e.",
+    "LightingSource": "Fuente de luz",
+    "Config": {
+      "Title": "Configuración de luz",
+      "LightRadius": "Radio de luz"
+    },
+    "Fields": {
+      "bright": "Luz brillante",
+      "dim": "Luz tenue",
+      "angle": "Ángulo",
+      "color": "Color",
+      "alpha": "Alpha",
+      "luminosity": "Luminosidad",
+      "attenuation": "Atenuación",
+      "contrast": "Contraste",
+      "shadows": "Sombras",
+      "animationType": "Tipo de animación",
+      "animationSpeed": "Velocidad de animación",
+      "animationIntensity": "Intensidad de animación"
+    },
+    "Settings": {
+      "LightTimer": {
+        "name": "Temporizador de luz",
+        "hint": "Apaga automáticamente la luz cuando se cumple la duración de uso de la actividad."
+      },
+      "EnrichSystemTorch": {
+        "name": "Enriquecer antorchas del sistema (opt-in)",
+        "hint": "Si está activo, Antorchas adaptará solo ítems con identifier=\"torch\" para que usen type=lighting y flags.antorchas.light, sin tocar nombre, descripción ni daño."
+      }
+    },
+    "torch": {
+      "name": "Antorcha"
+    },
+    "lamp": {
+      "name": "Lámpara"
+    },
+    "candle": {
+      "name": "Vela"
+    },
+    "hooded": {
+      "name": "Linterna capada"
+    },
+    "bullseye": {
+      "name": "Linterna de ojo de buey"
+    },
+    "Migration": {
+      "Title": "Migración de Antorchas",
+      "Content": "Se detectaron datos antiguos de iluminación. ¿Deseas migrarlos a la versión actual?",
+      "Warning": "Realiza una copia de seguridad antes de continuar.",
+      "Started": "Migración de Antorchas iniciada.",
+      "Completed": "Migración completada: {actors} actores, {items} ítems, {tokens} efectos en {duration}s.",
+      "Failed": "La migración de Antorchas falló. Revisa la consola para más detalles."
+    },
+    "Actions": {
+      "ToggleLight": "Encender/Apagar"
+    },
+    "Compatibility": {
+      "EnrichCompleted": "Compatibilidad aplicada. Ítems actualizados: {changed}."
+    }
+  }
+}

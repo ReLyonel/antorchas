@@ -1,11 +1,27 @@
 {
   "id": "antorchas",
   "title": "Antorchas",
+  "description": "Módulo para gestionar fuentes de luz consumibles (antorchas, lámparas y velas) en dnd5e.",
   "version": "1.0.0",
   "compatibility": {
     "minimum": "13",
     "verified": "13"
   },
+  "esmodules": [
+    "SLighting/slighting.js"
+  ],
+  "languages": [
+    {
+      "lang": "es",
+      "name": "Español",
+      "path": "lang/es.json"
+    },
+    {
+      "lang": "en",
+      "name": "English",
+      "path": "lang/en.json"
+    }
+  ],
   "flags": {
     "canUpload": true
   },
@@ -17,6 +33,5 @@
         "compatibility": {}
       }
     ]
-  },
-  "description": ""
+  }
 }

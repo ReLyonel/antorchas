@@ -1,0 +1,63 @@
+{
+  "SLighting": {
+    "ModuleDescription": "Consumable light source management for dnd5e.",
+    "LightingSource": "Light source",
+    "Config": {
+      "Title": "Light configuration",
+      "LightRadius": "Light radius"
+    },
+    "Fields": {
+      "bright": "Bright light",
+      "dim": "Dim light",
+      "angle": "Angle",
+      "color": "Color",
+      "alpha": "Alpha",
+      "luminosity": "Luminosity",
+      "attenuation": "Attenuation",
+      "contrast": "Contrast",
+      "shadows": "Shadows",
+      "animationType": "Animation type",
+      "animationSpeed": "Animation speed",
+      "animationIntensity": "Animation intensity"
+    },
+    "Settings": {
+      "LightTimer": {
+        "name": "Light timer",
+        "hint": "Automatically turn off light when activity usage duration expires."
+      },
+      "EnrichSystemTorch": {
+        "name": "Enrich system torches (opt-in)",
+        "hint": "When enabled, Antorchas adapts only items with identifier=\"torch\" to use type=lighting and flags.antorchas.light, without changing name, description, or damage."
+      }
+    },
+    "torch": {
+      "name": "Torch"
+    },
+    "lamp": {
+      "name": "Lamp"
+    },
+    "candle": {
+      "name": "Candle"
+    },
+    "hooded": {
+      "name": "Hooded lantern"
+    },
+    "bullseye": {
+      "name": "Bullseye lantern"
+    },
+    "Migration": {
+      "Title": "Antorchas migration",
+      "Content": "Legacy lighting data was detected. Do you want to migrate it to the current version?",
+      "Warning": "Create a backup before continuing.",
+      "Started": "Antorchas migration started.",
+      "Completed": "Migration completed: {actors} actors, {items} items, {tokens} effects in {duration}s.",
+      "Failed": "Antorchas migration failed. Check the console for details."
+    },
+    "Actions": {
+      "ToggleLight": "Toggle light"
+    },
+    "Compatibility": {
+      "EnrichCompleted": "Compatibility enrichment complete. Updated items: {changed}."
+    }
+  }
+}
