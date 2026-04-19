@@ -1,29 +1,29 @@
 import { registerSettings, registerConsumableTypes } from "./settings.js";
-import { handleToggleLight } from "./handlers.js";
+import { handleToggleLight, toggleLightFromItem, toggleLightFromActivity } from "./handlers.js";
 import { registerItemSheetHooks } from "./ui.js";
 import { injectStyles } from "./styles.js";
 import { checkAndRunMigration } from "./migration.js";
-import { MODULE_ID } from "./constants.js";
+import { isTorchLike, resolveLightSource } from "./light-source-resolver.js";
+import { isSystemTorchCandidate, enrichSystemTorches, runOptInTorchEnrichment } from "./system-torch-compat.js";
 
-function checkDependencies() {
-  const required = ["ATL", "sequencer"];
-  const optional = ["item-piles", "jb2a_patreon"];
-
-  for (const moduleId of required) {
-    if (!game.modules.get(moduleId)?.active) {
-      console.error(`SLighting | Missing required module: ${moduleId}`);
-    }
-  }
-
-  for (const moduleId of optional) {
-    if (!game.modules.get(moduleId)?.active) {
-      console.log(`SLighting | Optional module not active: ${moduleId}`);
-    }
-  }
-}
+export const AntorchasAPI = {
+  async toggleLight(activityOrInput) {
+    return handleToggleLight(activityOrInput);
+  },
+  async toggleLightFromItem(item, options) {
+    return toggleLightFromItem(item, options);
+  },
+  async toggleLightFromActivity(activity) {
+    return toggleLightFromActivity(activity);
+  },
+  isTorchLike,
+  resolveLightSource,
+  isSystemTorchCandidate,
+  enrichSystemTorches,
+};
 
 Hooks.once("init", () => {
-  console.log("SLighting | Initializing lighting system");
+  console.log("Antorchas | Initializing module");
   registerSettings();
   injectStyles();
 });
@@ -31,36 +31,30 @@ Hooks.once("init", () => {
 Hooks.once("ready", async () => {
   registerConsumableTypes();
   registerItemSheetHooks();
-  checkDependencies();
+
+  const thisModule = game.modules.get("antorchas");
+  if (thisModule) thisModule.api = AntorchasAPI;
+
+  await runOptInTorchEnrichment();
   await checkAndRunMigration();
 });
 
-Hooks.on("dnd5e.postUseActivity", async (activity, usageConfig, results) => {
-  await handleToggleLight(activity);
+// Compatibilidad con flujo moderno de Activities (dnd5e v4+)
+Hooks.on("dnd5e.postUseActivity", async (activity) => {
+  await toggleLightFromActivity(activity);
 });
 
-export const SLightingAPI = {
-  async toggleLight(activity) {
-    return handleToggleLight(activity);
-  },
+// Camino adicional para casos básicos (p.ej. items PHB sin activity especial)
+Hooks.on("dnd5e.useItem", async (item, config, options) => {
+  await toggleLightFromItem(item, { actor: item?.actor ?? null });
+});
 
-  isLightSource(item) {
-    return item?.type === "consumable" && item?.system?.type?.value === "lighting";
-  },
-
-  getLightingEffect(actor, subtype = null) {
-    return actor.appliedEffects.find((e) => {
-      const flags = e.flags["sweety-lighting"];
-      if (!flags) return false;
-      if (subtype) return flags.source === subtype;
-      return true;
-    });
-  },
-
-  async runMigration() {
-    const { migrateWorld } = await import("./migration.js");
-    return migrateWorld();
-  },
+export {
+  handleToggleLight as ToggleLight,
+  toggleLightFromItem,
+  toggleLightFromActivity,
+  isTorchLike,
+  resolveLightSource,
+  isSystemTorchCandidate,
+  enrichSystemTorches,
 };
-
-export { handleToggleLight as ToggleLight };

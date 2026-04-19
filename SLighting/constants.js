@@ -1,5 +1,5 @@
-export { MODULE_ID } from "../../constants.mjs";
-export const FLAG_NAMESPACE = "sweety-lighting";
+export const MODULE_ID = "antorchas";
+export const FLAG_NAMESPACE = "antorchas";
 
 export const CONSUMABLE_TYPE = "lighting";
 
@@ -94,36 +94,26 @@ export const SUBTYPE_DEFAULTS = {
   },
 };
 
-export const DEFAULT_LIGHT_CONFIG = {
-  alpha: "0.25",
-  luminosity: "0.5",
-  color: "#ffb433",
-  attenuation: "0.75",
-  contrast: "0.15",
-  shadows: "0.2",
-  animation: '{ "type": "torch", "speed": 2, "intensity": 4 }',
-};
-
 export const ASSETS = {
   torch: {
-    item: "modules/fifthpendium/misc/items/torch.webp",
-    tile: "modules/fifthpendium/misc/SLighting/torch.webp",
+    item: "icons/svg/torch.svg",
+    tile: "icons/svg/torch.svg",
   },
   lamp: {
-    item: "modules/fifthpendium/misc/items/lamp.webp",
-    tile: "modules/fifthpendium/misc/SLighting/lamp.webp",
+    item: "icons/svg/light.svg",
+    tile: "icons/svg/light.svg",
   },
   candle: {
-    item: "modules/fifthpendium/misc/items/candle.webp",
-    tile: "modules/fifthpendium/misc/SLighting/candle.webp",
+    item: "icons/svg/candle.svg",
+    tile: "icons/svg/candle.svg",
   },
   hooded: {
-    item: "modules/fifthpendium/misc/items/lamp.webp",
-    tile: "modules/fifthpendium/misc/SLighting/lamp.webp",
+    item: "icons/svg/light.svg",
+    tile: "icons/svg/light.svg",
   },
   bullseye: {
-    item: "modules/fifthpendium/misc/items/lamp.webp",
-    tile: "modules/fifthpendium/misc/SLighting/lamp.webp",
+    item: "icons/svg/light.svg",
+    tile: "icons/svg/light.svg",
   },
 };
 

@@ -1,4 +1,5 @@
-import { MODULE_ID, CONSUMABLE_TYPE, FLAG_NAMESPACE, SUBTYPE_DEFAULTS } from "./constants.js";
+import { MODULE_ID, CONSUMABLE_TYPE, SUBTYPE_DEFAULTS } from "./constants.js";
+import { resolveLightSource } from "./light-source-resolver.js";
 
 const ANIMATION_TYPES = {
   "": "None",
@@ -33,12 +34,16 @@ const ANIMATION_TYPES = {
 
 function isLightingConsumable(item) {
   if (!item || item.type !== "consumable") return false;
-  return item.system?.type?.value === CONSUMABLE_TYPE;
+
+  if (item.system?.type?.value === CONSUMABLE_TYPE) return true;
+  if (String(item.system?.identifier ?? "").trim().toLowerCase() === "torch") return true;
+
+  return resolveLightSource(item).isLightSource;
 }
 
-function getLightConfig(item) {
+function getLightConfig(item, subtypeOverride = null) {
   const flags = item.flags?.[MODULE_ID]?.light ?? {};
-  const subtype = item.system?.type?.subtype ?? "torch";
+  const subtype = subtypeOverride ?? item.system?.type?.subtype ?? "torch";
   const defaults = SUBTYPE_DEFAULTS[subtype] ?? SUBTYPE_DEFAULTS.torch;
 
   return {
@@ -73,6 +78,32 @@ function createRangeGroup(label, name, value, min, max, step, disabledAttr) {
   `;
 }
 
+
+function createToggleLightButton(item, isEditable) {
+  if (!isEditable) return null;
+
+  const wrapper = document.createElement("div");
+  wrapper.classList.add("form-group", "slighting-toggle");
+
+  const button = document.createElement("button");
+  button.type = "button";
+  button.classList.add("slighting-toggle-button");
+  button.textContent = game.i18n.localize("SLighting.Actions.ToggleLight");
+
+  button.addEventListener("click", async () => {
+    const api = game.modules.get("antorchas")?.api;
+    if (!api?.toggleLightFromItem) {
+      ui.notifications.warn("Antorchas | API no disponible.");
+      return;
+    }
+
+    await api.toggleLightFromItem(item, { actor: item.actor ?? null });
+  });
+
+  wrapper.appendChild(button);
+  return wrapper;
+}
+
 function createLightingFieldset(item, isEditable) {
   const config = getLightConfig(item);
   const disabledAttr = isEditable ? "" : "disabled";
@@ -94,17 +125,17 @@ function createLightingFieldset(item, isEditable) {
         <label>${game.i18n.localize("SLighting.Config.LightRadius")}</label>
         <div class="form-fields">
           <label class="checkbox">
-            ${game.i18n.localize("LIGHT.FIELDS.dim.label")}
+            ${game.i18n.localize("SLighting.Fields.dim")}
             <input type="number" name="${prefix}.dim" 
                    value="${config.dim}" min="0" step="5" ${disabledAttr}>
           </label>
           <label class="checkbox">
-            ${game.i18n.localize("LIGHT.FIELDS.bright.label")}
+            ${game.i18n.localize("SLighting.Fields.bright")}
             <input type="number" name="${prefix}.bright" 
                    value="${config.bright}" min="0" step="5" ${disabledAttr}>
           </label>
           <label class="checkbox">
-            ${game.i18n.localize("LIGHT.FIELDS.angle.label")}
+            ${game.i18n.localize("SLighting.Fields.angle")}
             <input type="number" name="${prefix}.angle" 
                    value="${config.angle}" min="0" max="360" step="5" ${disabledAttr}>
           </label>
@@ -112,7 +143,7 @@ function createLightingFieldset(item, isEditable) {
       </div>
 
       <div class="form-group">
-        <label>${game.i18n.localize("LIGHT.FIELDS.color.label")}</label>
+        <label>${game.i18n.localize("SLighting.Fields.color")}</label>
         <div class="form-fields">
           <input type="color" name="${prefix}.color" 
                  value="${config.color}" ${disabledAttr}>
@@ -120,17 +151,17 @@ function createLightingFieldset(item, isEditable) {
       </div>
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.alpha.label"),
+        game.i18n.localize("SLighting.Fields.alpha"),
         `${prefix}.alpha`, config.alpha, 0, 1, 0.05, disabledAttr
       )}
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.luminosity.label"),
+        game.i18n.localize("SLighting.Fields.luminosity"),
         `${prefix}.luminosity`, config.luminosity, 0, 1, 0.05, disabledAttr
       )}
 
       <div class="form-group">
-        <label>${game.i18n.localize("LIGHT.FIELDS.animation.type.label")}</label>
+        <label>${game.i18n.localize("SLighting.Fields.animationType")}</label>
         <div class="form-fields">
           <select name="${prefix}.animationType" ${disabledAttr}>
             ${animationOptions}
@@ -139,27 +170,27 @@ function createLightingFieldset(item, isEditable) {
       </div>
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.animation.speed.label"),
+        game.i18n.localize("SLighting.Fields.animationSpeed"),
         `${prefix}.animationSpeed`, config.animationSpeed, 1, 10, 1, disabledAttr
       )}
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.animation.intensity.label"),
+        game.i18n.localize("SLighting.Fields.animationIntensity"),
         `${prefix}.animationIntensity`, config.animationIntensity, 1, 10, 1, disabledAttr
       )}
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.attenuation.label"),
+        game.i18n.localize("SLighting.Fields.attenuation"),
         `${prefix}.attenuation`, config.attenuation, 0, 1, 0.05, disabledAttr
       )}
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.contrast.label"),
+        game.i18n.localize("SLighting.Fields.contrast"),
         `${prefix}.contrast`, config.contrast, 0, 1, 0.05, disabledAttr
       )}
 
       ${createRangeGroup(
-        game.i18n.localize("LIGHT.FIELDS.shadows.label"),
+        game.i18n.localize("SLighting.Fields.shadows"),
         `${prefix}.shadows`, config.shadows, 0, 1, 0.05, disabledAttr
       )}
     </fieldset>
@@ -209,6 +240,11 @@ function injectLightingFieldset(container, item, isEditable) {
 
   const fieldset = createLightingFieldset(item, isEditable);
   fieldset.classList.add("slighting-config");
+
+  const toggleButton = createToggleLightButton(item, isEditable);
+  if (toggleButton) {
+    fieldset.prepend(toggleButton);
+  }
 
   const detailsSection = container.querySelector('.tab[data-tab="details"]');
   if (detailsSection) {
